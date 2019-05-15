@@ -1,3 +1,5 @@
 # tracking-core
 
-This repo tries to get the tracking with the pozyx system working
+Tracks the Drone and saves the position to an objectbox database instance
+
+run 'python3 main.py'
