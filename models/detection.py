@@ -56,6 +56,33 @@ class Detection:
     def canny(self, src, threshold_low, threshold_high):
         return cv.Canny(src, threshold_low, threshold_high)
 
+    def houghCircles(self, src, frame):
+        circles = cv.HoughCircles(src,
+                                  method=cv.HOUGH_GRADIENT,
+                                  dp=1,
+                                  minDist=frame.shape[0] / 64,
+                                  param1=30,
+                                  param2=64,
+                                  minRadius=0,
+                                  maxRadius=0)
+        if circles is not None:
+            return circles
+        else:
+            # toDO: if no circles found
+            # quit()
+            return None
+
+    def drawCircles(self, frame, circles):
+        # Draw detected circles
+        if circles is not None:
+            # convert the (x, y) coordinates and radius of the circles to integers
+            circles = np.uint16(np.around(circles))
+
+            # loop over the (x, y) coordinates and radius
+            for (x, y, r) in circles[0, :]:
+                # draw the circle in the output image
+                cv.circle(frame, (x, y), r, (0, 255, 0), 2)
+
     def regionExtraction(self, gray, circles):
         if circles is not None:
             # convert the (x, y) coordinates and radius of the circles to integers
@@ -102,34 +129,6 @@ class Detection:
                 cv.imshow('patch', patch)
                 return angle
 
-
-    def drawCircles(self, frame, circles):
-        # Draw detected circles
-        if circles is not None:
-            # convert the (x, y) coordinates and radius of the circles to integers
-            circles = np.uint16(np.around(circles))
-
-            # loop over the (x, y) coordinates and radius
-            for (x, y, r) in circles[0, :]:
-                # draw the circle in the output image
-                cv.circle(frame, (x, y), r, (0, 255, 0), 2)
-
-    def houghCircles(self, src, frame):
-        circles = cv.HoughCircles(src,
-                                  method=cv.HOUGH_GRADIENT,
-                                  dp=1,
-                                  minDist=frame.shape[0] / 64,
-                                  param1=30,
-                                  param2=64,
-                                  minRadius=0,
-                                  maxRadius=0)
-        if circles is not None:
-            return circles
-        else:
-            # toDO: if no circles found
-            # quit()
-            return None
-
     def streaming(self):
         if self.cap is None or not self.cap.isOpened():
             print("no Video capture found")
@@ -145,18 +144,17 @@ class Detection:
                     edges = self.canny(gray, 50, 250)
                     circles = self.houghCircles(edges, frame)
                     self.drawCircles(frame, circles)
-                    self.regionExtraction(gray, circles)
-                    print('ANGLE ==', self.regionExtraction(gray, circles))
+                    angle = self.regionExtraction(gray, circles)
+                    # print('ANGLE ==', angle)
 
                     # show windows
                     cv.imshow('frame', frame)
                     cv.imshow('gray', gray)
                     cv.imshow('edges', edges)
-                else:
-                    break
-
+                    return angle
                 # keyboard interrupt
                 if cv.waitKey(100) & 0xFF == ord('q'):
                     break
+
             self.cap.release()
             cv.destroyAllWindows()

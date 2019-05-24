@@ -13,17 +13,8 @@ class Tag:
         self.algorithm = PozyxConstants.POSITIONING_ALGORITHM_UWB_ONLY
         self.dimension = PozyxConstants.DIMENSION_3D
 
-    def getSerialport(self):
-        # shortcut to not have to find out the port yourself
-        serial_port = get_first_pozyx_serial_port()
-        if serial_port is None:
-            print("No Pozyx connected. Check your USB cable or your driver!")
-            quit()
-        else:
-            return serial_port
-
     def setup(self):
-        """Sets up the Pozyx for positioning by calibrating its anchor list."""
+        # Sets up the Pozyx for positioning by calibrating its anchor list
         print("------------POZYX POSITIONING Version{} -------------".format(version))
         print("")
         print("- System will manually configure tag")
@@ -37,19 +28,8 @@ class Tag:
         print("")
         print("---------------------------------------------------")
 
-    def getPosition(self):
-        """Performs positioning and displays/exports the results."""
-        position = Coordinates()
-        status = self.serial.doPositioning(
-            position, self.dimension, self.algorithm, remote_id=None)
-        if status == POZYX_SUCCESS:
-            return position
-        else:
-            self.printError("positioning")
-
     def setAnchors(self):
-        """Adds the manually measured anchors to the Pozyx's device list one for one."""
-
+        # Adds the manually measured anchors to the Pozyx's device list one for one
         status = self.serial.clearDevices(remote_id=None)
         for anchor in self.anchors:
             status &= self.serial.addDevice(anchor, remote_id=None)
@@ -59,8 +39,27 @@ class Tag:
                                                         len(self.anchors),
                                                         remote_id=None)
 
+    def getSerialport(self):
+        # shortcut to not have to find out the port yourself
+        serial_port = get_first_pozyx_serial_port()
+        if serial_port is None:
+            print("No Pozyx connected. Check your USB cable or your driver!")
+            quit()
+        else:
+            return serial_port
+
+    def getPosition(self):
+        # Performs positioning and exports the results
+        position = Coordinates()
+        status = self.serial.doPositioning(
+            position, self.dimension, self.algorithm, remote_id=None)
+        if status == POZYX_SUCCESS:
+            return position
+        else:
+            self.printError("positioning")
+
     def printConfig(self):
-        """Prints and potentially publishes the anchor configuration result in a human-readable way."""
+        # Prints the anchor configuration result
         list_size = SingleRegister()
 
         self.serial.getDeviceListSize(list_size, None)
@@ -84,7 +83,7 @@ class Tag:
             sleep(0.025)
 
     def printError(self, operation):
-        """Prints the Pozyx's error"""
+        # Prints the Pozyx's error
         error_code = SingleRegister()
         if None is None:
             self.serial.getErrorCode(error_code)
