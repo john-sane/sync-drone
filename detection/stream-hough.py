@@ -39,6 +39,7 @@ cap.set(cv.CAP_PROP_FRAME_HEIGHT, 480)
 print(cv.CAP_PROP_FRAME_WIDTH, cv.CAP_PROP_FRAME_HEIGHT)
 
 while True:
+
     # capture frame-by-frame
     ret, frame = cap.read()
 
@@ -48,8 +49,8 @@ while True:
         # img_scaled = cv.resize(img_gray, None, fx=0.5, fy=0.5, interpolation=cv.INTER_AREA)
 
         # greyscale
-
     img_gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+
 
     # canny edge detection
     edges = cv.Canny(img_gray, 50, 250)
@@ -75,7 +76,7 @@ while True:
     if circles is not None:
         # convert the (x, y) coordinates and radius of the circles to integers
         circles = np.uint16(np.around(circles))
-        if cirles is 0:
+        if circles is 0:
             break
 
         # loop over the (x, y) coordinates and radius
@@ -118,6 +119,7 @@ while True:
             print("P2: " + str(y) + ", " + str(endy))
 
     cv.imshow('frame', frame)
+    cv.imshow('gray', img_gray)
     cv.imshow('edges', edges)
     cv.imshow('patch', patch)
 
