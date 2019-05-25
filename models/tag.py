@@ -1,7 +1,7 @@
 from time import sleep
 
 from pypozyx import PozyxSerial, get_first_pozyx_serial_port, PozyxConstants, version, SingleRegister, Coordinates, \
-    DeviceList, POZYX_SUCCESS
+    DeviceList, EulerAngles, POZYX_SUCCESS
 
 
 class Tag:
@@ -15,6 +15,7 @@ class Tag:
 
     def setup(self):
         # Sets up the Pozyx for positioning by calibrating its anchor list
+        print("")
         print("------------POZYX POSITIONING Version{} -------------".format(version))
         print("")
         print("- System will manually configure tag")
@@ -40,7 +41,7 @@ class Tag:
                                                         remote_id=None)
 
     def getSerialport(self):
-        # shortcut to not have to find out the port yourself
+        # serialport connection test
         serial_port = get_first_pozyx_serial_port()
         if serial_port is None:
             print("No Pozyx connected. Check your USB cable or your driver!")
@@ -49,7 +50,7 @@ class Tag:
             return serial_port
 
     def getPosition(self):
-        # Performs positioning and exports the results
+        # performs positioning and exports the results
         position = Coordinates()
         status = self.serial.doPositioning(
             position, self.dimension, self.algorithm, remote_id=None)
@@ -58,8 +59,16 @@ class Tag:
         else:
             self.printError("positioning")
 
+    def getEulerAngle(self):
+        # reads euler angles (heading, roll, pitch) and exports the results
+        euler_angles = EulerAngles()
+        self.serial.getEulerAngles_deg(euler_angles)
+        print("---- ORIENTATION (degree) ----")
+        print(euler_angles)
+        return euler_angles
+
     def printConfig(self):
-        # Prints the anchor configuration result
+        # prints the anchor configuration result
         list_size = SingleRegister()
 
         self.serial.getDeviceListSize(list_size, None)
@@ -79,7 +88,7 @@ class Tag:
         for i in range(list_size[0]):
             anchor_coordinates = Coordinates()
             self.serial.getDeviceCoordinates(device_list[i], anchor_coordinates, None)
-            print("ANCHOR, 0x%0.4x, %s" % (device_list[i], str(anchor_coordinates)))
+            print("ANCHOR: 0x%0.4x, %s" % (device_list[i], str(anchor_coordinates)))
             sleep(0.025)
 
     def printError(self, operation):
