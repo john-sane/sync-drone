@@ -3,19 +3,16 @@ import numpy as np
 import time
 
 
-class Detection:
-    def __init__(self, src):
+class YawDetection:
+    def __init__(self, visual_feedback=True, src=0, width=640, height=480, fps=15):
         self.cap = cv.VideoCapture(src)
-
-    def setup(self):
-        self.setFPS(15)
-        # self.getFPS()
-        self.setDimensions(640, 480)
-        # self.getDimensions()
-        # self.testingFPS()
-
-    def setFPS(self, fps):
+        self.visual_feedback = visual_feedback
+        # set fps
         self.cap.set(cv.CAP_PROP_FPS, fps)
+        # set dimensions
+        self.cap.set(cv.CAP_PROP_FRAME_WIDTH, width)
+        self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, height)
+        # self.testingFPS()
 
     def getFPS(self):
         print("FPS: ", self.cap.get(cv.CAP_PROP_FPS))
@@ -39,22 +36,9 @@ class Detection:
         fps = num_frames / seconds
         print("frames per second : {0}".format(fps))
 
-    def setDimensions(self, width, height):
-        self.cap.set(cv.CAP_PROP_FRAME_WIDTH, width)
-        self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, height)
-
     def getDimensions(self):
         print("width: ", self.cap.get(cv.CAP_PROP_FRAME_WIDTH))
         print("height: ", self.cap.get(cv.CAP_PROP_FRAME_HEIGHT))
-
-    def resize(self, src):
-        return cv.resize(src, None, fx=0.5, fy=0.5, interpolation=cv.INTER_AREA)
-
-    def grayScale(self, src):
-        return cv.cvtColor(src, cv.COLOR_BGR2GRAY)
-
-    def canny(self, src, threshold_low, threshold_high):
-        return cv.Canny(src, threshold_low, threshold_high)
 
     def houghCircles(self, src, frame):
         circles = cv.HoughCircles(src,
@@ -62,7 +46,7 @@ class Detection:
                                   dp=1,
                                   minDist=frame.shape[0] / 64,
                                   param1=30,
-                                  param2=64,
+                                  param2=40,
                                   minRadius=0,
                                   maxRadius=0)
         if circles is not None:
@@ -126,35 +110,44 @@ class Detection:
                 print("P1: " + str(x) + ", " + str(endx))
                 print("P2: " + str(y) + ", " + str(endy))"""
 
-                cv.imshow('patch', patch)
+                if self.visual_feedback:
+                    cv.imshow('patch', patch)
+
                 return angle
 
-    def streaming(self):
+    def drawWindows(self, frame, gray, edges, circles):
+        # show windows
+        cv.imshow('frame', frame)
+        self.drawCircles(frame, circles)
+        cv.imshow('gray', gray)
+        cv.imshow('edges', edges)
+
+    def initVideocapture(self):
         if self.cap is None or not self.cap.isOpened():
             print("no Video capture found")
             self.cap.release()
-            quit()
+            return False
         else:
-            while True:
-                # read frame by frame
-                ret, frame = self.cap.read()
+            print("Video capture found")
+            return True
 
-                if ret is not None or frame is not None:
-                    gray = self.grayScale(frame)
-                    edges = self.canny(gray, 50, 250)
-                    circles = self.houghCircles(edges, frame)
-                    self.drawCircles(frame, circles)
-                    angle = self.regionExtraction(gray, circles)
-                    # print('ANGLE ==', angle)
+    def closeVideocapture(self):
+        self.cap.release()
+        cv.destroyAllWindows()
 
-                    # show windows
-                    cv.imshow('frame', frame)
-                    cv.imshow('gray', gray)
-                    cv.imshow('edges', edges)
-                    return angle
-                # keyboard interrupt
-                if cv.waitKey(100) & 0xFF == ord('q'):
-                    break
+    def getAngle(self):
+        # read frame by frame
+        ret, frame = self.cap.read()
 
-            self.cap.release()
-            cv.destroyAllWindows()
+        if frame is not None:
+            gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+            edges = cv.Canny(gray, 50, 250)
+            circles = self.houghCircles(edges, frame)
+            angle = self.regionExtraction(gray, circles)
+            # print('ANGLE ==', angle)
+            if self.visual_feedback:
+                self.drawWindows(frame, gray, edges, circles)
+            else:
+                cv.destroyAllWindows()
+            print("detection-angle: ", angle)
+            return angle

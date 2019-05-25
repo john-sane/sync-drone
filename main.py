@@ -1,11 +1,8 @@
 from models.drone import Drone
 from models.anchor import Anchor
 from models.database import Database
-from models.detection import Detection
 
 from time import sleep
-import objectbox
-import cv2 as cv
 
 
 if __name__ == "__main__":
@@ -22,22 +19,12 @@ if __name__ == "__main__":
     # create the drone object
     drone = Drone(anchors, db)
 
-    # define Detection object (src = dev/video0)
-    stream = Detection(0)
-    stream.setup()  # stream settings
-    stream.streaming()
-
     while True:
         # update the current position of the drone every 0.1 seconds and print it
-        """drone.updatePosition()
+        drone.updatePosition()
         sleep(0.1)
         if drone.position is not None:
             drone.savePositionToDatabase()
-            drone.db_object.getPosition()"""
-
-        # print detected angle
-        print('detection-angle: ', stream.streaming())
-
-        # keyboard interrupt
-        if cv.waitKey(100) & 0xFF == ord('q'):
-            break
+            drone.db_object.getPosition()
+    else:
+        pass
