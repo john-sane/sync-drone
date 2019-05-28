@@ -1,7 +1,7 @@
 from time import sleep
 
 from pypozyx import PozyxSerial, get_first_pozyx_serial_port, PozyxConstants, version, SingleRegister, Coordinates, \
-    DeviceList, EulerAngles, POZYX_SUCCESS
+    DeviceList, EulerAngles, POZYX_SUCCESS, POZYX_FAILURE
 
 
 class Tag:
@@ -46,7 +46,7 @@ class Tag:
         serial_port = get_first_pozyx_serial_port()
         if serial_port is None:
             print("No Pozyx connected. Check your USB cable or your driver!")
-            quit()
+            return None
         else:
             return serial_port
 
@@ -56,6 +56,7 @@ class Tag:
         try:
             status = self.serial.doPositioning(position, self.dimension, self.algorithm, remote_id=None)
             if status == POZYX_SUCCESS:
+                # print("POZYX data:", position)
                 return position
             else:
                 self.printError("positioning")
@@ -63,14 +64,16 @@ class Tag:
             self.printError("positioning")
             return None
 
-    def getEulerAngle(self):
-        # reads euler angles (heading, roll, pitch) and exports the results
-        euler_angles = EulerAngles()
-        self.serial.getEulerAngles_deg(euler_angles)
-        print("---- ORIENTATION (degree) ----")
-        print("")
-        print(euler_angles)
-        return euler_angles
+    def getOrientation(self):
+        # reads euler angles (yaw, roll, pitch) and exports the results
+        orientation = EulerAngles()
+        status = self.serial.getEulerAngles_deg(orientation)
+        if status == POZYX_SUCCESS:
+            # print("POZYX data:", orientation)
+            return orientation
+        else:
+            print("Sensor data not found")
+            return None
 
     def printConfig(self):
         # prints the anchor configuration result

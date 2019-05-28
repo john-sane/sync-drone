@@ -10,7 +10,7 @@ class Drone:
         self.tag = Tag(anchors)      # The tag, that tracks the Drone (pozyx)
         self.control = None          # The class, that communicates with the flight controller
         self.position = None         # the current position of the drone (easy access)
-        self.euler = None
+        self.orientation = None
         self.yaw_detector = YawDetection()     # yaw angle
         # Creates a tag in the database and saves the id of the drone objects entity
         self.database_id = database.tag.put(TagModel())
@@ -19,9 +19,15 @@ class Drone:
 
     def updatePosition(self):
         self.position = self.tag.getPosition()
-        self.euler = self.tag.getEulerAngle()
+        self.orientation = self.tag.getOrientation()
         if self.yaw_detector.initVideocapture():
             self.yaw_detector.getAngle()
 
-    def savePositionToDatabase(self):
+    def savePositionToDatabase(self, database):
         self.db_object.setPosition(self.position.x, self.position.y, self.position.z)
+        database.tag.put(self.db_object)
+
+    def saveOrientationToDatabase(self, database):
+        self.db_object.setOrientation(self.orientation.heading, self.orientation.roll, self.orientation.pitch)
+        database.tag.put(self.db_object)
+

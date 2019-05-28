@@ -16,7 +16,7 @@ class Anchor:
     def setAnchorname(self):
         self.anchor_name = "0x61f1"
 
-    def getAnchorname(self):
+    def printAnchorname(self):
         print('Anchor:', self.anchor_name)
 
     def setPosition(self, x, y, z):
@@ -24,7 +24,7 @@ class Anchor:
         self.pos_y = y
         self.pos_z = z
 
-    def getPosition(self):
+    def printPosition(self):
         print("POSITION: X: {p.pos_x} Y: {p.pos_y} Z: {p.pos_z}".format(p=self))
 
     """def setMetrics(self):
@@ -53,7 +53,7 @@ class Tag:
     def setTagname(self):
         self.tag_name = "0x45f67"
 
-    def getTagname(self):
+    def printTagname(self):
         print('Tag:', self.tag_name)
 
     def setPosition(self, x, y, z):
@@ -61,10 +61,8 @@ class Tag:
         self.pos_y = y
         self.pos_z = z
 
-    def getPosition(self):
-        print("")
-        print("---- POSITION (mm) ")
-        print("")
+    def printPosition(self):
+        print("DATABASE:")
         print("X: {p.pos_x} Y: {p.pos_y} Z: {p.pos_z}".format(p=self))
         print("")
 
@@ -73,6 +71,7 @@ class Tag:
         self.roll = roll
         self.pitch = pitch
 
-    def getOrientation(self):
-        print("---- ORIENTATION (degree) ")
+    def printOrientation(self):
+        print("DATABASE:")
         print("yaw: {p.yaw} roll: {p.roll} pitch: {p.pitch}".format(p=self))
+        print("")
