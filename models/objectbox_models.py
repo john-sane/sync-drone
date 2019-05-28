@@ -62,8 +62,11 @@ class Tag:
         self.pos_z = z
 
     def getPosition(self):
-        print("---- POSITION (mm) ----")
+        print("")
+        print("---- POSITION (mm) ")
+        print("")
         print("X: {p.pos_x} Y: {p.pos_y} Z: {p.pos_z}".format(p=self))
+        print("")
 
     def setOrientation(self, yaw, roll, pitch):
         self.yaw = yaw
@@ -71,5 +74,5 @@ class Tag:
         self.pitch = pitch
 
     def getOrientation(self):
-        print("---- ORIENTATION (degree) ----")
+        print("---- ORIENTATION (degree) ")
         print("yaw: {p.yaw} roll: {p.roll} pitch: {p.pitch}".format(p=self))

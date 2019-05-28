@@ -10,7 +10,7 @@ if cap is None or not cap.isOpened():
     cap.release()
 
 # limit fps
-cap.set(cv.CAP_PROP_FPS, 15)
+cap.set(cv.CAP_PROP_FPS, 30)
 print("CAP_PROP_FPS", cap.get(cv.CAP_PROP_FPS))
 
 # testing fps limitation
@@ -51,7 +51,6 @@ while True:
         # greyscale
     img_gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
 
-
     # canny edge detection
     edges = cv.Canny(img_gray, 50, 250)
 
@@ -70,56 +69,60 @@ while True:
                               dp=1,
                               minDist=frame.shape[0] / 64,
                               param1=30,
-                              param2=50,
+                              param2=45,
                               minRadius=0, maxRadius=0)
     # Draw detected circles
     if circles is not None:
         # convert the (x, y) coordinates and radius of the circles to integers
         circles = np.uint16(np.around(circles))
-        if circles is 0:
+        if circles is None:
             break
 
         # loop over the (x, y) coordinates and radius
         for (x, y, r) in circles[0, :]:
             # draw the circle in the output image
             cv.circle(frame, (x, y), r, (0, 255, 0), 2)
+
             # region extraction
-            p = r
-            patch = img_gray[y - p:y + p, x - p:x + p]
-            if patch is 0:
+            p = r - 10
+            if (y - p >= 0) and (x - p >= 0):
+                patch = img_gray[y - p:y + p, x - p:x + p]
+
+                # calculating the overall gradient
+                sobelx = np.int16(cv.Sobel(patch, cv.CV_64F, 1, 0, ksize=7))
+                sobely = np.int16(cv.Sobel(patch, cv.CV_64F, 0, 1, ksize=7))
+
+                # calculate the main gradient direction (simply sum all gradients and see where it points)
+                sumGrad_x = np.sum(sobelx)
+                sumGrad_y = np.sum(sobely)
+
+                angle = np.arctan2(sumGrad_y, sumGrad_x)
+                angle_degree = np.rad2deg(angle)
+
+                # draw this into the image (from the center)
+                x = np.uint16(patch.shape[0] / 2)
+                y = np.uint16(patch.shape[1] / 2)
+                length = 40
+
+                endx = np.uint16(x + (length * np.cos(angle)))
+                endy = np.uint16(y + (length * np.sin(angle)))
+
+                cv.line(patch, (x, y), (endx, endy), (0, 0, 0), thickness=2, lineType=cv.LINE_AA)
+
+                # testing
+                print("gradX: " + str(sumGrad_x))
+                print("gradY: " + str(sumGrad_y))
+                print("angle RAD: " + str(angle))
+                print("angel DEGREE: " + str(angle_degree))
+                print("patch.shape[0]: " + str(patch.shape[0]))
+                print("patch.shape[1]: " + str(patch.shape[1]))
+                print("P1: " + str(x) + ", " + str(endx))
+                print("P2: " + str(y) + ", " + str(endy))
+            else:
+                print("no patch in image")
                 break
 
-            # calculating the overall gradient
-            sobelx = np.int16(cv.Sobel(patch, cv.CV_64F, 1, 0, ksize=7))
-            sobely = np.int16(cv.Sobel(patch, cv.CV_64F, 0, 1, ksize=7))
-
-            # calculate the main gradient direction (simply sum all gradients and see where it points)
-            sumGrad_x = np.sum(sobelx)
-            sumGrad_y = np.sum(sobely)
-
-            angle = np.arctan2(sumGrad_y, sumGrad_x)
-
-            # draw this into the image (from the center)
-            x = np.uint16(patch.shape[0] / 2)
-            y = np.uint16(patch.shape[1] / 2)
-            length = 40
-
-            endx = np.uint16(x + (length * np.cos(angle)))
-            endy = np.uint16(y + (length * np.sin(angle)))
-
-            cv.line(patch, (x, y), (endx, endy), (0, 0, 0), thickness=2, lineType=cv.LINE_AA)
-
-            # testing
-            print("gradX: " + str(sumGrad_x))
-            print("gradY: " + str(sumGrad_y))
-            print("angle: " + str(angle))
-            print("patch.shape[0]: " + str(patch.shape[0]))
-            print("patch.shape[0]: " + str(patch.shape[1]))
-            print("P1: " + str(x) + ", " + str(endx))
-            print("P2: " + str(y) + ", " + str(endy))
-
     cv.imshow('frame', frame)
-    cv.imshow('gray', img_gray)
     cv.imshow('edges', edges)
     cv.imshow('patch', patch)
 

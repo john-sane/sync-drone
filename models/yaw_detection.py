@@ -46,7 +46,7 @@ class YawDetection:
                                   dp=1,
                                   minDist=frame.shape[0] / 64,
                                   param1=30,
-                                  param2=40,
+                                  param2=45,
                                   minRadius=0,
                                   maxRadius=0)
         if circles is not None:
@@ -77,43 +77,46 @@ class YawDetection:
 
                 # region extraction
                 p = r - 10
-                patch = gray[y - p:y + p, x - p:x + p]
-                if patch is 0:
-                    break
+                if (y - p >= 0) and (x - p >= 0):
+                    patch = gray[y - p:y + p, x - p:x + p]
 
-                # calculating the overall gradient
-                sobelx = np.int16(cv.Sobel(patch, cv.CV_64F, 1, 0, ksize=7))
-                sobely = np.int16(cv.Sobel(patch, cv.CV_64F, 0, 1, ksize=7))
+                    # calculating the overall gradient
+                    sobelx = np.int16(cv.Sobel(patch, cv.CV_64F, 1, 0, ksize=7))
+                    sobely = np.int16(cv.Sobel(patch, cv.CV_64F, 0, 1, ksize=7))
 
-                # calculate the main gradient direction (simply sum all gradients and see where it points)
-                sumGrad_x = np.sum(sobelx)
-                sumGrad_y = np.sum(sobely)
+                    # calculate the main gradient direction (simply sum all gradients and see where it points)
+                    sumGrad_x = np.sum(sobelx)
+                    sumGrad_y = np.sum(sobely)
 
-                angle = np.arctan2(sumGrad_y, sumGrad_x)
+                    angle = np.arctan2(sumGrad_y, sumGrad_x)
+                    angle_degree = np.rad2deg(angle)
 
-                # draw this into the image (from the center)
-                x = np.uint16(patch.shape[0] / 2)
-                y = np.uint16(patch.shape[1] / 2)
-                length = 40
+                    # draw this into the image (from the center)
+                    x = np.uint16(patch.shape[0] / 2)
+                    y = np.uint16(patch.shape[1] / 2)
+                    length = 40
 
-                endx = np.uint16(x + (length * np.cos(angle)))
-                endy = np.uint16(y + (length * np.sin(angle)))
+                    endx = np.uint16(x + (length * np.cos(angle)))
+                    endy = np.uint16(y + (length * np.sin(angle)))
 
-                cv.line(patch, (x, y), (endx, endy), (0, 0, 0), thickness=2, lineType=cv.LINE_AA)
+                    cv.line(patch, (x, y), (endx, endy), (0, 0, 0), thickness=2, lineType=cv.LINE_AA)
 
-                # testing
-                """print("gradX: " + str(sumGrad_x))
-                print("gradY: " + str(sumGrad_y))
-                print("angle: " + str(angle))
-                print("patch.shape[0]: " + str(patch.shape[0]))
-                print("patch.shape[1]: " + str(patch.shape[1]))
-                print("P1: " + str(x) + ", " + str(endx))
-                print("P2: " + str(y) + ", " + str(endy))"""
+                    # testing
+                    """print("gradX: " + str(sumGrad_x))
+                    print("gradY: " + str(sumGrad_y))"""
+                    print("angle RAD: " + str(angle))
+                    print("angle DEGREE: " + str(angle_degree))
+                    print("patch.shape[0]: " + str(patch.shape[0]))
+                    print("patch.shape[1]: " + str(patch.shape[1]))
+                    """print("P1: " + str(x) + ", " + str(endx))
+                    print("P2: " + str(y) + ", " + str(endy))"""
 
-                if self.visual_feedback:
-                    cv.imshow('patch', patch)
-
-                return angle
+                    if self.visual_feedback:
+                        cv.imshow('patch', patch)
+                    return angle
+                else:
+                    print('patch not in image')
+                    return None
 
     def drawWindows(self, frame, gray, edges, circles):
         # show windows
@@ -144,10 +147,11 @@ class YawDetection:
             edges = cv.Canny(gray, 50, 250)
             circles = self.houghCircles(edges, frame)
             angle = self.regionExtraction(gray, circles)
-            # print('ANGLE ==', angle)
+
             if self.visual_feedback:
                 self.drawWindows(frame, gray, edges, circles)
             else:
+                self.cap.release()
                 cv.destroyAllWindows()
-            print("detection-angle: ", angle)
+
             return angle

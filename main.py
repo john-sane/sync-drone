@@ -22,7 +22,7 @@ if __name__ == "__main__":
     while True:
         # update the current position of the drone every 0.1 seconds and print it
         drone.updatePosition()
-        sleep(0.1)
+        sleep(1.0)
         if drone.position is not None:
             drone.savePositionToDatabase()
             drone.db_object.getPosition()

@@ -14,28 +14,29 @@ class Tag:
         self.dimension = PozyxConstants.DIMENSION_3D
 
     def setup(self):
-        # Sets up the Pozyx for positioning by calibrating its anchor list
+        # sets up the Pozyx for positioning by calibrating its anchor list
         print("")
-        print("------------POZYX POSITIONING Version{} -------------".format(version))
+        print("POZYX POSITIONING Version {}".format(version))
+        print("-------------------------------------------------------")
         print("")
         print("- System will manually configure tag")
         print("")
         print("- System will auto start positioning")
         print("")
-        print("---------------------------------------------------")
+        print("-------------------------------------------------------")
         print("")
         self.setAnchors()
         self.printConfig()
         print("")
-        print("---------------------------------------------------")
+        print("-------------------------------------------------------")
+        print("")
 
     def setAnchors(self):
-        # Adds the manually measured anchors to the Pozyx's device list one for one
+        # adds the manually measured anchors to the Pozyx's device list one for one
         status = self.serial.clearDevices(remote_id=None)
         for anchor in self.anchors:
             status &= self.serial.addDevice(anchor, remote_id=None)
         if len(self.anchors) > 4:
-            print('All here')
             status &= self.serial.setSelectionOfAnchors(PozyxConstants.ANCHOR_SELECT_AUTO,
                                                         len(self.anchors),
                                                         remote_id=None)
@@ -52,18 +53,22 @@ class Tag:
     def getPosition(self):
         # performs positioning and exports the results
         position = Coordinates()
-        status = self.serial.doPositioning(
-            position, self.dimension, self.algorithm, remote_id=None)
-        if status == POZYX_SUCCESS:
-            return position
-        else:
+        try:
+            status = self.serial.doPositioning(position, self.dimension, self.algorithm, remote_id=None)
+            if status == POZYX_SUCCESS:
+                return position
+            else:
+                self.printError("positioning")
+        except:
             self.printError("positioning")
+            return None
 
     def getEulerAngle(self):
         # reads euler angles (heading, roll, pitch) and exports the results
         euler_angles = EulerAngles()
         self.serial.getEulerAngles_deg(euler_angles)
         print("---- ORIENTATION (degree) ----")
+        print("")
         print(euler_angles)
         return euler_angles
 
@@ -72,7 +77,7 @@ class Tag:
         list_size = SingleRegister()
 
         self.serial.getDeviceListSize(list_size, None)
-        print("List size: {0}".format(list_size[0]))
+        # print("List size: {0}".format(list_size[0]))
 
         if list_size[0] != len(self.anchors):
             self.printError("configuration")
