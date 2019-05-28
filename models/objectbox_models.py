@@ -1,5 +1,6 @@
 from objectbox.model import *
 
+
 @Entity(id=1, uid=1)
 class Anchor:
 
@@ -15,7 +16,7 @@ class Anchor:
     def setAnchorname(self):
         self.anchor_name = "0x61f1"
 
-    def getAnchorname(self):
+    def printAnchorname(self):
         print('Anchor:', self.anchor_name)
 
     def setPosition(self, x, y, z):
@@ -23,8 +24,8 @@ class Anchor:
         self.pos_y = y
         self.pos_z = z
 
-    def getPosition(self):
-        print("--- POSITION --- X: {p.pos_x} Y: {p.pos_y} Z: {p.pos_z}".format(p=self))
+    def printPosition(self):
+        print("POSITION: X: {p.pos_x} Y: {p.pos_y} Z: {p.pos_z}".format(p=self))
 
     """def setMetrics(self):
         self.latency = 2.1
@@ -36,10 +37,6 @@ class Anchor:
         print('Update Rate:', self.update_rate)
         print('Success Rate:', self.success_rate)"""
 
-    """def __str__(self):
-        return str(self.__class__) + ": " + str(self.__dict__)"""
-
-
 
 @Entity(id=2, uid=2)
 class Tag:
@@ -49,29 +46,14 @@ class Tag:
     pos_x = Property(int, id=3, uid=2003)
     pos_y = Property(int, id=4, uid=2004)
     pos_z = Property(int, id=5, uid=2005)
-    """acc_x = Property(int, id=6, uid=2006)
-    acc_y = Property(int, id=7, uid=2007)
-    acc_z = Property(int, id=8, uid=2008)
-    lin_acc_x = Property(int, id=9, uid=2009)
-    lin_acc_y = Property(int, id=10, uid=2010)
-    lin_acc_z = Property(int, id=11, uid=2011)
-    mag_x = Property(int, id=12, uid=2012)
-    mag_y = Property(int, id=13, uid=2013)
-    mag_z = Property(int, id=14, uid=2014)
-    yaw = Property(int, id=15, uid=2015)
-    roll = Property(int, id=16, uid=2016)
-    pitch = Property(int, id=17, uid=2017)
-    ang_velo_x = Property(int, id=18, uid=2018)
-    ang_velo_y = Property(int, id=19, uid=2019)
-    ang_velo_z = Property(int, id=20, uid=2020)
-    grav_x = Property(int, id=21, uid=2021)
-    grav_y = Property(int, id=22, uid=2022)
-    grav_z = Property(int, id=23, uid=2023)"""
+    yaw = Property(int, id=6, uid=2006)
+    roll = Property(int, id=7, uid=2007)
+    pitch = Property(int, id=8, uid=2008)
 
     def setTagname(self):
         self.tag_name = "0x45f67"
 
-    def getTagname(self):
+    def printTagname(self):
         print('Tag:', self.tag_name)
 
     def setPosition(self, x, y, z):
@@ -79,32 +61,17 @@ class Tag:
         self.pos_y = y
         self.pos_z = z
 
-    def getPosition(self):
-        print('Position X:', self.pos_x, end = ' / ')
-        print('Position Y:', self.pos_y, end = ' / ')
-        print('Position Z:', self.pos_z)
+    def printPosition(self):
+        print("DATABASE:")
+        print("X: {p.pos_x} Y: {p.pos_y} Z: {p.pos_z}".format(p=self))
+        print("")
 
-    """def getAcceleration(self):
-        print('Acceleration X:', self.acc_x)
-        print('Acceleration Y:', self.acc_y)
-        print('Acceleration Z:', self.acc_z)
+    def setOrientation(self, yaw, roll, pitch):
+        self.yaw = yaw
+        self.roll = roll
+        self.pitch = pitch
 
-    def getMagneticField(self):
-        print('Magnetic Field X:', self.mag_x)
-        print('Magnetic Field Y:', self.mag_y)
-        print('Magnetic Field Z:', self.mag_z)
-
-    def getOrientation(self):
-        print('Yaw X:', self.yaw)
-        print('Roll Y:', self.roll)
-        print('Pitch Z:', self.pitch)
-
-    def getAngularVelocity(self):
-        print('Angular Velocity X:', self.ang_velo_x)
-        print('Angular Velocity Y:', self.ang_velo_y)
-        print('Angular Velocity Z:', self.ang_velo_z)
-
-    def getGravityVector(self):
-        print('Gravity Vector X:', self.grav_x)
-        print('Gravity Vector Y:', self.grav_y)
-        print('Gravity Vector Z:', self.grav_z)"""
+    def printOrientation(self):
+        print("DATABASE:")
+        print("yaw: {p.yaw} roll: {p.roll} pitch: {p.pitch}".format(p=self))
+        print("")
