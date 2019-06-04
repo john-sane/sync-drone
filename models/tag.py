@@ -1,5 +1,5 @@
 from time import sleep
-
+import random
 from pypozyx import PozyxSerial, get_first_pozyx_serial_port, PozyxConstants, version, SingleRegister, Coordinates, \
     DeviceList, EulerAngles, POZYX_SUCCESS, POZYX_FAILURE
 
@@ -40,6 +40,14 @@ class Tag:
             status &= self.serial.setSelectionOfAnchors(PozyxConstants.ANCHOR_SELECT_AUTO,
                                                         len(self.anchors),
                                                         remote_id=None)
+
+    @classmethod
+    def mockedPosition(self):
+        return Coordinates(random.randint(0, 1000),random.randint(0, 1000),random.randint(0, 1000))
+
+    @classmethod
+    def mockedOrientation(self):
+        return EulerAngles(random.randint(0, 30), random.randint(0, 30), random.randint(0, 30))
 
     def getSerialport(self):
         # serialport connection test

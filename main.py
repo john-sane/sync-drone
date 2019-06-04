@@ -25,11 +25,11 @@ if __name__ == "__main__":
         sleep(1.0)
 
         if drone.position is not None:
-            drone.savePositionToDatabase()
-            # drone.db_object.printPosition()
+            drone.savePositionToDatabase(db)
+            drone.db_object.printPosition()
 
         if drone.orientation is not None:
-            drone.saveOrientationToDatabase()
-            # drone.db_object.printOrientation()
+            drone.saveOrientationToDatabase(db)
+            drone.db_object.printOrientation()
     else:
         pass
