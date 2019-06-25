@@ -50,9 +50,6 @@ class Tag:
     roll = Property(int, id=7, uid=2007)
     pitch = Property(int, id=8, uid=2008)
 
-    def setTagname(self):
-        self.tag_name = "0x45f67"
-
     def printTagname(self):
         print('Tag:', self.tag_name)
 
@@ -75,3 +72,11 @@ class Tag:
         print("DATABASE:")
         print("yaw: {p.yaw} roll: {p.roll} pitch: {p.pitch}".format(p=self))
         print("")
+
+@Entity(id=3, uid=3)
+class Led:
+    id = Id(id=1, uid=3001)
+    stick_pos = Property(int, id=2, uid=3002)
+    red = Property(int, id=3, uid=3003)
+    green = Property(int, id=4, uid=3004)
+    blue = Property(int, id=5, uid=3005)
