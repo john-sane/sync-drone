@@ -18,18 +18,4 @@ if __name__ == "__main__":
 
     # creates the drone object
     drone = Drone(anchors, db)
-
-    while True:
-        # update the current position of the drone every 0.1 seconds and print it
-        drone.updatePosition()
-        sleep(1.0)
-
-        if drone.position is not None:
-            drone.savePositionToDatabase(db)
-            drone.db_object.printPosition()
-
-        if drone.orientation is not None:
-            drone.saveOrientationToDatabase(db)
-            drone.db_object.printOrientation()
-    else:
-        pass
+    drone.startUpdateLoop()
