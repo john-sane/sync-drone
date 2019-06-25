@@ -50,11 +50,11 @@ class Drone:
             self.updatePosition()
             sleep(1.0)
             if self.position is not None:
-                self.savePositionToDatabase(self.)
+                self.savePositionToDatabase(self.database)
                 self.db_object.printPosition()
 
             if self.orientation is not None:
-                self.saveOrientationToDatabase(db)
+                self.saveOrientationToDatabase(self.database)
                 self.db_object.printOrientation()
 
             updateLeds()
