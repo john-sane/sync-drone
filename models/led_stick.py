@@ -13,7 +13,7 @@ class LedStick:
 
         allocate_leds()
 
-    def set_color(self, position=None, r, g, b):
+    def set_color(self,  r, g, b, position=None):
         if position is not None:
             self.led_strip.fill((r, g, b), position, 1)
         else:

@@ -1,51 +1,65 @@
-from pypozyx import Coordinates
-from pypozyx.core import PozyxConnectionError
 import board
 import random
+from time import sleep
+
 from models.tag import Tag
+from models.led_stick import LedStick
 from models.objectbox_models import Tag as TagModel
+
+from pypozyx.core import PozyxConnectionError
 
 
 # The main class - There should be always only one Drone instance
 class Drone:
     def __init__(self, anchors, database):
-
-        self.active = False       #initialtes the Drone as inactive
-
+        # init the Drone as inactive
+        self.active = False
+        # init the database
         self.database = database
 
         try:
-            self.tag = Tag(anchors)             # The tag, that tracks the Drone (pozyx)
+            # init the tag, that tracks the Drone (pozyx)
+            self.tag = Tag(anchors)
         except PozyxConnectionError:
-            print("No Pozyx Anchor found - will mock up position for tests.")
-            self.tag = None            # if no tag found, set it to None
+            print("No Pozyx Tag found - will mock up position for tests.")
+            # if no tag found, set it to None
+            self.tag = None
 
         try:
             from models.yaw_detection import YawDetection
-            self.yaw_detector = YawDetection()  # yaw angle
-        except ModuleNotFoundError:
+            # import yawDetection class
+            self.yaw_detector = YawDetection()
+        except ImportError:
             print("couldn't start camera and opencv")
-            self.yaw_detector = None            # if opencv fails, set detector None
+            # if opencv fails, set detector None
+            self.yaw_detector = None
 
-        self.control = None                     # The class, that communicates with the flight controller
-        self.position = None                    # the current position of the drone (easy access)
+        # class, that communicates with the flight controller
+        self.control = None
+        # the current position of the drone (x, y, z)
+        self.position = None
+        # the current orientation of the drone (yaw, roll, pitch)
         self.orientation = None
-        # Creates a tag in the database and saves the id of the drone objects entity
+
+        # creates a tag in the database and saves the id of the drone objects entity
         self.tag_id = database.tag.put(TagModel())
-        self.db_object = database.tag.get(self.tag_id)  # The entity - easy read and write
-        self.led_sticks = {"fl": None,"fr": None, "bl": None, "br": None } # sticks zB fl: front-left
+        # create the entity - easy read and write
+        self.db_object = database.tag.get(self.tag_id)
+        # LED sticks -> front-left, front-right, back-left, back-right
+        self.led_sticks = {'fl': None, 'fr': None, 'bl': None, 'br': None}
 
         if self.tag is not None:
-            self.tag.setup()  # Setup the Tag
+            # setup for the Tag
+            self.tag.setup()
 
         def initLedSticks(self, pin, stick_position):
+            # init LED sticks with an LEDStick object
             self.led_sticks[stick_position] = LedStick(pin, self.database)
 
-        initLedSticks(board.D18, "fl")
+        initLedSticks(self, board.D18, 'fl')
 
-
-    def startUpdateLoop():
-        active = True
+        def startUpdateLoop():
+            active = True
         while self.active:
             self.updatePosition()
             sleep(1.0)
@@ -60,7 +74,8 @@ class Drone:
             updateLeds()
 
     def updateLeds():
-        led_sticks["fl"].set_color(random.randint(0, 255),random.randint(0, 255), random.randint(0, 255))
+        
+        led_sticks["fl"].setColor(random.randint(0, 255),random.randint(0, 255), random.randint(0, 255))
 
     def updatePosition(self):
         if self.tag is not None:
