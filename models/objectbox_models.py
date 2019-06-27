@@ -68,7 +68,7 @@ class Tag:
 @Entity(id=3, uid=3)
 class Led:
     id = Id(id=1, uid=3001)
-    stick_pos = Property(int, id=2, uid=3002)
-    red = Property(int, id=3, uid=3003)
-    green = Property(int, id=4, uid=3004)
-    blue = Property(int, id=5, uid=3005)
+    red = Property(int, id=2, uid=3002)
+    green = Property(int, id=3, uid=3003)
+    blue = Property(int, id=4, uid=3004)
+    stick_pos = Property(int, id=5, uid=3005)

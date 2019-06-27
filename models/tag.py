@@ -1,12 +1,12 @@
 from time import sleep
 import random
 from pypozyx import PozyxSerial, get_first_pozyx_serial_port, PozyxConstants, version, SingleRegister, Coordinates, \
-    DeviceList, EulerAngles, POZYX_SUCCESS, POZYX_FAILURE
+    DeviceList, EulerAngles, POZYX_SUCCESS
 
 
 class Tag:
     def __init__(self, anchors):
-        self.serial = PozyxSerial(self.getSerialport())
+        self.serial = PozyxSerial(self.getSerialport)
         self.anchors = anchors
 
         # position calculation algorithm and tracking dimension
@@ -41,14 +41,7 @@ class Tag:
                                                         len(self.anchors),
                                                         remote_id=None)
 
-    @classmethod
-    def mockedPosition(self):
-        return Coordinates(random.randint(0, 1000),random.randint(0, 1000),random.randint(0, 1000))
-
-    @classmethod
-    def mockedOrientation(self):
-        return EulerAngles(random.randint(0, 30), random.randint(0, 30), random.randint(0, 30))
-
+    @property
     def getSerialport(self):
         # serialport connection test
         serial_port = get_first_pozyx_serial_port()
@@ -83,17 +76,26 @@ class Tag:
             print("Sensor data not found")
             return None
 
+    @classmethod
+    def mockedPosition(cls):
+        return Coordinates(random.randint(0, 1000), random.randint(0, 1000), random.randint(0, 1000))
+
+    @classmethod
+    def mockedOrientation(cls):
+        return EulerAngles(random.randint(0, 30), random.randint(0, 30), random.randint(0, 30))
+
     def printConfig(self):
         # prints the anchor configuration result
         list_size = SingleRegister()
 
+        # prints the anchors list size
         self.serial.getDeviceListSize(list_size, None)
-        # print("List size: {0}".format(list_size[0]))
 
         if list_size[0] != len(self.anchors):
             self.printError("configuration")
             return
 
+        # prints the anchors list
         device_list = DeviceList(list_size=list_size[0])
         self.serial.getDeviceIds(device_list, None)
 
@@ -108,7 +110,7 @@ class Tag:
             sleep(0.025)
 
     def printError(self, operation):
-        # Prints the Pozyx's error
+        # Prints Pozyx's errors
         error_code = SingleRegister()
         if None is None:
             self.serial.getErrorCode(error_code)
