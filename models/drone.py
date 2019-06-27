@@ -58,8 +58,8 @@ class Drone:
 
         initLedSticks(self, board.D18, 'fl')
 
-        def startUpdateLoop():
-            active = True
+    def startUpdateLoop(self):
+        active = True
         while self.active:
             self.updatePosition()
             sleep(1.0)
@@ -73,9 +73,9 @@ class Drone:
 
             updateLeds()
 
-    def updateLeds():
+    def updateLeds(self):
         
-        led_sticks["fl"].setColor(random.randint(0, 255),random.randint(0, 255), random.randint(0, 255))
+        self.led_sticks["fl"].setColor(random.randint(0, 255),random.randint(0, 255), random.randint(0, 255))
 
     def updatePosition(self):
         if self.tag is not None:
