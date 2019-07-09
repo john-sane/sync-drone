@@ -33,12 +33,12 @@ class Tag:
 
     id = Id(id=1, uid=2001)
     tag_name = Property(str, id=2, uid=2002)
-    pos_x = Property(int, id=3, uid=2003)
-    pos_y = Property(int, id=4, uid=2004)
-    pos_z = Property(int, id=5, uid=2005)
-    yaw = Property(int, id=6, uid=2006)
-    roll = Property(int, id=7, uid=2007)
-    pitch = Property(int, id=8, uid=2008)
+    pos_x = Property(float, id=3, uid=2003)
+    pos_y = Property(float, id=4, uid=2004)
+    pos_z = Property(float, id=5, uid=2005)
+    yaw = Property(float, id=6, uid=2006)
+    roll = Property(float, id=7, uid=2007)
+    pitch = Property(float, id=8, uid=2008)
 
     def setAnchorname(self):
         self.tag_name = ''
@@ -60,9 +60,7 @@ class Tag:
         self.pitch = pitch
 
     def printOrientation(self):
-        print("DATABASE:")
         print("TAG ORIENTATION (db): yaw: {p.yaw} roll: {p.roll} pitch: {p.pitch}".format(p=self))
-        print("")
 
 
 @Entity(id=3, uid=3)
@@ -71,4 +69,8 @@ class Led:
     red = Property(int, id=2, uid=3002)
     green = Property(int, id=3, uid=3003)
     blue = Property(int, id=4, uid=3004)
-    stick_pos = Property(int, id=5, uid=3005)
+    arm_nr = Property(int, id=5, uid=3005)
+    stick_pos = Property(int, id=6, uid=3006)
+
+    def printColor(self):
+        print("COLOR (db): R: {p.red} G: {p.green} B: {p.blue}".format(p=self))

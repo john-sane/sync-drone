@@ -44,6 +44,7 @@ class Drone:
 
         # create a Tag in the database and saves the id of the drone tag objects entity
         self.tag_id = database.tag.put(TagModel())
+        #print(self.tag_id)
         # create the Tag entity - easy read and write
         self.db_object = database.tag.get(self.tag_id)
 
@@ -52,14 +53,12 @@ class Drone:
             self.tag.setup()
 
         # TODO: LED
-        # LED sticks -> front-left, front-right, back-left, back-right
-        self.led_sticks = {'fl': None, 'fr': None, 'bl': None, 'br': None}
+        # LED sticks -> front-left: 4, front-right: 2, back-left: 3, back-right: 1
+        self.led_sticks = []
 
-        def initLedSticks(pin, stick_position):
-            # init LED sticks with given stick position
-            self.led_sticks[stick_position] = LedStick(pin, database)
-
-        initLedSticks(board.D18, 'fl')
+        for i in range(4):
+            # init LED sticks for all 4 arms (tag_id identifies drone)
+            self.led_sticks.append(LedStick(database, i, self.tag_id))
 
     def startUpdateLoop(self):
         # set the Drone as active
@@ -67,21 +66,21 @@ class Drone:
         while self.active:
             self.updatePosition()
             sleep(1.0)
-            """if self.position is not None:
+            if self.position is not None:
                 # saves the position in the database
-                self.savePositionToDatabase(self.database)
+                self.savePositionToDatabase()
                 self.db_object.printPosition()
 
             if self.orientation is not None:
                 # saves the orientation in the database
-                self.saveOrientationToDatabase(self.database)
-                self.db_object.printOrientation()"""
+                self.saveOrientationToDatabase()
+                self.db_object.printOrientation()
 
-            self.updateLeds()
+            self.updateLeds(0)
 
-    def updateLeds(self):
+    def updateLeds(self, arm_nr):
         # update the color of the led sticks
-        self.led_sticks["fl"].setColor(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        self.led_sticks[arm_nr].setColor(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
     def updatePosition(self):
         if self.tag is not None:
@@ -96,14 +95,15 @@ class Drone:
 
         if self.yaw_detector is not None and self.yaw_detector.initVideocapture():
             # Merge detected Angle with pozyx Angle
-            print(self.yaw_detector.getAngle())
+            print("yaw detector angle: ", self.yaw_detector.getAngle())
 
-    def savePositionToDatabase(self, database):
+    def savePositionToDatabase(self):
+        self.db_object = self.database.tag.get(self.tag_id)
         self.db_object.setPosition(self.position.x, self.position.y, self.position.z)
         # update position in database object
-        database.tag.put(self.db_object)
+        self.database.tag.put(self.db_object)
 
-    def saveOrientationToDatabase(self, database):
+    def saveOrientationToDatabase(self):
         self.db_object.setOrientation(self.orientation.heading, self.orientation.roll, self.orientation.pitch)
         # update orientation in database object
-        database.tag.put(self.db_object)
+        self.database.tag.put(self.db_object)
