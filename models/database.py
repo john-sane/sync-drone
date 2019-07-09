@@ -11,7 +11,7 @@ class Database:
         # load entities with last property entry
         # self.anchor_entity = self.model.entity(Anchor, last_property_id=objectbox.model.IdUid(8, 1008))
         self.tag_entity = self.TagModel.entity(Tag, last_property_id=objectbox.model.IdUid(8, 2008))
-        self.led_entity = self.LedModel.entity(Led, last_property_id=objectbox.model.IdUid(6, 3006))
+        self.led_entity = self.LedModel.entity(Led, last_property_id=objectbox.model.IdUid(4, 3004))
 
         # define number of entities
         self.TagModel.last_entity_id = objectbox.model.IdUid(3, 3)

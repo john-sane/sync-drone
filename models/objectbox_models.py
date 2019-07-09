@@ -69,8 +69,11 @@ class Led:
     red = Property(int, id=2, uid=3002)
     green = Property(int, id=3, uid=3003)
     blue = Property(int, id=4, uid=3004)
-    arm_nr = Property(int, id=5, uid=3005)
-    stick_pos = Property(int, id=6, uid=3006)
+
+    def setColor(self, red, green, blue):
+        self.red = red
+        self.green = green
+        self.blue = blue
 
     def printColor(self):
         print("COLOR (db): R: {p.red} G: {p.green} B: {p.blue}".format(p=self))
