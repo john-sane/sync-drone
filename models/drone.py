@@ -1,5 +1,3 @@
-import board
-import random
 from time import sleep
 
 from models.tag import Tag
@@ -52,7 +50,7 @@ class Drone:
             # setup for the Tag
             self.tag.setup()
 
-        # init LED object
+        # init LED-Stick
         self.led_sticks = LedStick(self.tag_id, database)
 
     def startUpdateLoop(self):
@@ -74,15 +72,10 @@ class Drone:
             self.updateLEDs(self.database)
 
     def updateLEDs(self, database):
-        # set color of LedSticks
-        print("LED test: ", int(255 / self.position.x * 100))
-        print("LED test: ", int(255 / self.position.y * 100))
-        print("LED test: ", int(255 / self.position.z * 100))
-        # self.led_sticks.doColoring(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-
-        self.led_sticks.doColoring(int(255 / self.position.x * 80),
-                                   int(255 / self.position.y * 80),
-                                   int(255 / self.position.z * 80))
+        # set color of LED-Sticks depending on current position
+        self.led_sticks.doColoring(int(self.position.x * 0.1275),
+                                   int(self.position.y * 0.1275),
+                                   int(self.position.z * 0.1275))
 
         self.led_sticks.saveColorToDatabase(database)
 
