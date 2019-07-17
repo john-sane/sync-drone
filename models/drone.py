@@ -73,9 +73,10 @@ class Drone:
 
     def updateLEDs(self, database):
         # set color of LED-Sticks depending on current position
-        self.led_sticks.doColoring(int(self.position.x * 0.1275),
-                                   int(self.position.y * 0.1275),
-                                   int(self.position.z * 0.1275))
+        position = database.tag.get(self.tag_id).getPosition()
+        self.led_sticks.doColoring(int(position.x * 0.1275),
+                                   int(position.y * 0.1275),
+                                   int(position.z * 0.1275))
 
         self.led_sticks.saveColorToDatabase(database)
 

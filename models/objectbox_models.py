@@ -51,6 +51,9 @@ class Tag:
         self.pos_y = y
         self.pos_z = z
 
+    def getPosition(self):
+        return {'x': self.pos_x, 'y': self.pos_y, 'z': self.pos_z}
+
     def printPosition(self):
         print("TAG POSITION (db): X: {p.pos_x} Y: {p.pos_y} Z: {p.pos_z}".format(p=self))
 
