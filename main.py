@@ -8,10 +8,10 @@ from time import sleep
 if __name__ == "__main__":
 
     # define Anchor Positions (Anchor ID, Position.xyz)
-    anchors = [Anchor(0x6674, [4139, 594, 2000]).getAnchorCoordinates(),
-               Anchor(0x6976, [-768, 4320, 1200]).getAnchorCoordinates(),
-               Anchor(0x6141, [-749, 750, 1300]).getAnchorCoordinates(),
-               Anchor(0x671f, [-2229, 3645, 1000]).getAnchorCoordinates()]
+    anchors = [Anchor(0x6674, [2400, 4200, 0]).getAnchorCoordinates(),
+               Anchor(0x6976, [0, 4200, 0]).getAnchorCoordinates(),
+               Anchor(0x6141, [0, 0, 0]).getAnchorCoordinates(),
+               Anchor(0x671f, [1800, 1600, 0]).getAnchorCoordinates()]
 
     # creates objectbox database
     db = Database()

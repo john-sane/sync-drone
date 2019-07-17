@@ -68,15 +68,16 @@ class Drone:
                 # saves the orientation in the database
                 self.saveOrientationToDatabase()
                 self.tag_object.printOrientation()
-
             self.updateLEDs(self.database)
 
     def updateLEDs(self, database):
         # set color of LED-Sticks depending on current position
         position = database.tag.get(self.tag_id).getPosition()
-        self.led_sticks.doColoring(int(position.x * 0.1275),
-                                   int(position.y * 0.1275),
-                                   int(position.z * 0.1275))
+        print("TESTPOS:", position)
+        x = position["x"] * 0.1063
+        y = position["y"] * 0.0607
+        z = position["z"] * 0
+        self.led_sticks.doColoring(x, y, z)
 
         self.led_sticks.saveColorToDatabase(database)
 
