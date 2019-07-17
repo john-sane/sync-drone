@@ -3,7 +3,6 @@ from random import random
 import neopixel
 import board
 from models.objectbox_models import Led as LedModel
-from threading import Thread
 
 class LedStick:
     def __init__(self, tag_id, database):
@@ -33,10 +32,5 @@ class LedStick:
     def saveColorToDatabase(self, database):
         self.led_object.setColor(self.red, self.green, self.blue)
         # update color in database object
-        database.led.get(self.db_id)
-        self.led_object.printColor()
-
-
-
-
-
+        database.led.put(self.led_object)
+        database.led.get(self.db_id).printColor()

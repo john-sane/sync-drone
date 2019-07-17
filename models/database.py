@@ -1,6 +1,5 @@
 import objectbox
 from models.objectbox_models import Anchor, Tag, Led
-import time
 
 # class for easy Database setups
 class Database:
