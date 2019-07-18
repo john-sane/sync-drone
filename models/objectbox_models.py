@@ -40,7 +40,7 @@ class Tag:
     roll = Property(float, id=7, uid=2007)
     pitch = Property(float, id=8, uid=2008)
 
-    def setAnchorname(self):
+    def setTagname(self):
         self.tag_name = ''
 
     def printTagname(self):

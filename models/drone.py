@@ -33,6 +33,9 @@ class Drone:
             # if opencv fails, set detector None
             self.yaw_detector = None
 
+        # init anchors
+        self.anchors = anchors
+
         # class, that communicates with the flight controller
         self.control = None
         # current position of the drone (x, y, z)
@@ -71,14 +74,22 @@ class Drone:
             self.updateLEDs(self.database)
 
     def updateLEDs(self, database):
-        # set color of LED-Sticks depending on current position
+        # get saved postions from database
         position = database.tag.get(self.tag_id).getPosition()
-        print("TESTPOS:", position)
-        x = position["x"] * 0.1063
-        y = position["y"] * 0.0607
-        z = position["z"] * 0
-        self.led_sticks.doColoring(x, y, z)
 
+        # get the max values from the anchor coordinates
+        max_x = max(self.anchors[0][2], self.anchors[1][2], self.anchors[2][2], self.anchors[3][2])
+        max_y = max(self.anchors[0][3], self.anchors[1][3], self.anchors[2][3], self.anchors[3][3])
+        max_z = max(self.anchors[0][4], self.anchors[1][4], self.anchors[2][4], self.anchors[3][4])
+
+        # calculate the color depends on the position [coordinate * factor = 255]
+        r = position["x"] * (255/max_x)
+        g = position["y"] * (255/max_y)
+        b = position["z"] * (255/max_z)
+
+        # set the color values
+        self.led_sticks.doColoring(r, g, b)
+        # save color to database
         self.led_sticks.saveColorToDatabase(database)
 
     def updatePosition(self):

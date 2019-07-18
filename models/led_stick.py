@@ -16,7 +16,7 @@ class LedStick:
         self.blue = 0
         self.led_count = 36
 
-        self.led_stick = neopixel.NeoPixel(pin=board.MOSI, n=self.led_count, brightness=1, pixel_order=neopixel.GRB)
+        self.led_stick = neopixel.NeoPixel(pin=board.D12, n=self.led_count, brightness=1, pixel_order=neopixel.GRB)
 
     def doColoring(self, r, g, b):
         # set color for
@@ -24,16 +24,11 @@ class LedStick:
         self.green = self.normalize_range(int(g))
         self.blue = self.normalize_range(int(b))
 
-        self.led_stick.fill((255, 0, 0))
+        self.led_stick.fill((self.red, self.green, self.blue))
         print(self.led_stick)
 
-        """for i in range(self.led_count):
-            self.led_stick[i] = (r, g, b)
-            self.red = self.led_stick[0][0]
-            self.green = self.led_stick[0][1]
-            self.blue = self.led_stick[0][2]"""
-
-    def normalize_range(self, value):
+    @staticmethod
+    def normalize_range(value):
         return min(max(value, 0), 255)
 
     def saveColorToDatabase(self, database):

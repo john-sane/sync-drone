@@ -16,6 +16,10 @@ class Database:
         self.TagModel.last_entity_id = objectbox.model.IdUid(3, 3)
         self.LedModel.last_entity_id = objectbox.model.IdUid(3, 3)
 
+        # initialize an empty DB before the first server start the server
+        # self.server_db = objectbox.Builder().model(self.LedModel).directory("server-db").build()
+
         # the Box, where you can put Tag / Led objects in
         self.tag = objectbox.Box(objectbox.Builder().model(self.TagModel).directory("db").build(), Tag)
         self.led = objectbox.Box(objectbox.Builder().model(self.LedModel).directory("db").build(), Led)
+        # self.led = objectbox.Box(objectbox.Builder().model(self.LedModel).sync_uri("ws://127.0.0.1:9999").directory("led-db").build(), Led)
