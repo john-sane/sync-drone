@@ -78,5 +78,8 @@ class Led:
         self.green = green
         self.blue = blue
 
+    def getColor(self):
+        return {'red': self.red, 'green': self.green, 'blue': self.blue}
+
     def printColor(self):
         print("COLOR (db): R: {p.red} G: {p.green} B: {p.blue}".format(p=self))

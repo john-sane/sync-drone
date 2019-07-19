@@ -4,10 +4,11 @@ import neopixel
 import board
 from models.objectbox_models import Led as LedModel
 
+
 class LedStick:
     def __init__(self, tag_id, database):
         # init NeoPixel class with params
-        #self.pins = [board.D21, board.D18, board.D12, board.MOSI]
+        # self.pins = [board.D21, board.D18, board.D12, board.MOSI]
         self.tag_id = tag_id
         self.db_id = database.led.put(LedModel())
         self.led_object = database.led.get(self.db_id)
@@ -25,7 +26,6 @@ class LedStick:
         self.blue = self.normalize_range(int(b))
 
         self.led_stick.fill((self.red, self.green, self.blue))
-        print(self.led_stick)
 
     @staticmethod
     def normalize_range(value):
@@ -36,3 +36,12 @@ class LedStick:
         # update color in database object
         database.led.put(self.led_object)
         database.led.get(self.db_id).printColor()
+
+    def setColorFromDatabase(self, database):
+        rgb = database.led.get(self.db_id).getColor()
+        print(rgb)
+        """for x in rgb:
+            print(x.red, x.green, x.blue)
+            self.led_stick.fill((x.red, x.green, x.blue))
+            self.led_stick.show()
+            #database.led.remove(x.id)"""

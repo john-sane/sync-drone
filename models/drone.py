@@ -9,12 +9,14 @@ from pypozyx.core import PozyxConnectionError
 
 # The main class - There should be always only one Drone instance
 class Drone:
-    def __init__(self, anchors, database):
+    def __init__(self, anchors, database, isMaster):
         # init the Drone as inactive
         self.active = False
 
         # init the database
         self.database = database
+
+        self.isMaster = isMaster
 
         try:
             # init the tag, that tracks the Drone (pozyx)
@@ -72,6 +74,7 @@ class Drone:
                 self.saveOrientationToDatabase()
                 self.tag_object.printOrientation()
             self.updateLEDs(self.database)
+            self.syncLEDs(self.database)
 
     def updateLEDs(self, database):
         # get saved postions from database
@@ -91,6 +94,9 @@ class Drone:
         self.led_sticks.doColoring(r, g, b)
         # save color to database
         self.led_sticks.saveColorToDatabase(database)
+
+    def syncLEDs(self, database):
+        self.led_sticks.setColorFromDatabase(database)
 
     def updatePosition(self):
         if self.tag is not None:

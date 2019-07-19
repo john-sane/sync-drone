@@ -79,7 +79,7 @@ class Tag:
     @classmethod
     def mockedPosition(cls):
         # return Coordinates(random.randint(0, 1000), random.randint(0, 1000), random.randint(0, 1000))
-        return Coordinates(1000, 1000, 1000)
+        return Coordinates(random.randint(0, 2000), random.randint(0, 2000), random.randint(0, 2000))
 
     @classmethod
     def mockedOrientation(cls):
