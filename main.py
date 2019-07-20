@@ -19,4 +19,4 @@ if __name__ == "__main__":
 
     # creates the drone object
     drone = Drone(anchors, db, isMaster)
-    drone.startUpdateLoop()
+    #drone.startUpdateLoop()
