@@ -63,20 +63,21 @@ class Drone:
         self.active = True
         while self.active:
             self.updatePosition()
-            sleep(1.0)
+            sleep(0.2)
             if self.position is not None:
                 # saves the position in the database
                 self.savePositionToDatabase()
                 self.tag_object.printPosition()
+                if self.isMaster:
+                    self.updateLEDsFromPosition(self.database)
+                self.led_sticks.setColorFromDatabase(self.database)
 
             if self.orientation is not None:
                 # saves the orientation in the database
                 self.saveOrientationToDatabase()
                 self.tag_object.printOrientation()
-            self.updateLEDs(self.database)
-            self.syncLEDs(self.database)
 
-    def updateLEDs(self, database):
+    def updateLEDsFromPosition(self, database):
         # get saved postions from database
         position = database.tag.get(self.tag_id).getPosition()
 
@@ -91,12 +92,9 @@ class Drone:
         b = position["z"] * (255/max_z)
 
         # set the color values
-        self.led_sticks.doColoring(r, g, b)
+        self.led_sticks.updateColorFromPosition(r, g, b)
         # save color to database
         self.led_sticks.saveColorToDatabase(database)
-
-    def syncLEDs(self, database):
-        self.led_sticks.setColorFromDatabase(database)
 
     def updatePosition(self):
         if self.tag is not None:

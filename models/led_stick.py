@@ -19,29 +19,24 @@ class LedStick:
 
         self.led_stick = neopixel.NeoPixel(pin=board.D12, n=self.led_count, brightness=1, pixel_order=neopixel.GRB)
 
-    def doColoring(self, r, g, b):
+    def updateColorFromPosition(self, r, g, b):
         # set color for
         self.red = self.normalize_range(int(r))
         self.green = self.normalize_range(int(g))
         self.blue = self.normalize_range(int(b))
-
-        self.led_stick.fill((self.red, self.green, self.blue))
 
     @staticmethod
     def normalize_range(value):
         return min(max(value, 0), 255)
 
     def saveColorToDatabase(self, database):
-        self.led_object.setColor(self.red, self.green, self.blue)
-        # update color in database object
-        database.led.put(self.led_object)
-        database.led.get(self.db_id).printColor()
+        # update color in every led database object
+        for led in database.led.get_all():
+            led.setColor(self.red, self.green, self.blue)
+            database.led.put(led)
 
     def setColorFromDatabase(self, database):
         rgb = database.led.get(self.db_id).getColor()
-        print(rgb)
-        """for x in rgb:
-            print(x.red, x.green, x.blue)
-            self.led_stick.fill((x.red, x.green, x.blue))
-            self.led_stick.show()
-            #database.led.remove(x.id)"""
+        self.led_stick.fill((rgb['red'], rgb['green'], rgb['blue']))
+        self.led_stick.show()
+        print("red: ", rgb['red'], "green: ", rgb['green'], "blue: ", rgb['blue'], "ID: ", self.db_id)
