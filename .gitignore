@@ -1,6 +1,7 @@
 models/__pycache__/*
 test/__pycache__/*
 db/
+objectbox-0.2.0.dev0-py3-none-any.whl
 sync-server-armv7l
 .git/
 .idea/*

@@ -7,12 +7,13 @@ from time import sleep
 
 if __name__ == "__main__":
 
-    isMaster = False
+    isMaster = True
     # define Anchor Positions (Anchor ID, Position.xyz)
-    anchors = [Anchor(0x6141, [0, 0, 0]).getAnchorCoordinates(),
-               Anchor(0x6674, [1100, 0, 500]).getAnchorCoordinates(),
-               Anchor(0x6976, [0, 2010, 1000]).getAnchorCoordinates(),
-               Anchor(0x671f, [1200, 2020, 1500]).getAnchorCoordinates()]
+    anchors = [Anchor(0x6141, [3230, 0, 20]).getAnchorCoordinates(),
+               Anchor(0x6674, [0, 2840, 1080]).getAnchorCoordinates(),
+               Anchor(0x6976, [0, 0, 1400]).getAnchorCoordinates(),
+               Anchor(0x671f, [3230, 1610, 1120]).getAnchorCoordinates(),
+               Anchor(0x6a41, [0, 2240, 915]).getAnchorCoordinates()]
 
     # creates objectbox database
     db = Database(isMaster)

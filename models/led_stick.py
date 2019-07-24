@@ -40,3 +40,6 @@ class LedStick:
         self.led_stick.fill((rgb['red'], rgb['green'], rgb['blue']))
         self.led_stick.show()
         print("red: ", rgb['red'], "green: ", rgb['green'], "blue: ", rgb['blue'], "ID: ", self.db_id)
+
+
+
