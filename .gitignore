@@ -1,4 +1,6 @@
 models/__pycache__/*
+test/__pycache__/*
 db/
+sync-server-armv7l
 .git/
 .idea/*

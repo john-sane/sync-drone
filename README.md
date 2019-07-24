@@ -1,9 +1,9 @@
 # tracking-core
 
-Tracks the Drone and saves the position to an objectbox database instance
+Tracks the Drone and saves the position, orientation and LED color to an objectbox database instance
 
-run 'python3 main.py'
+run ```python3 main.py```
 
 for testing:
 
-run 'python3 -m unittest'
+run ```python3 -m unittest```
