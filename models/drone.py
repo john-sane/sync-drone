@@ -13,18 +13,26 @@ class Drone:
         # init the Drone as inactive
         self.active = False
 
+        # init drone as Master or Worker
+        self.isMaster = isMaster
+
         # init the database
         self.database = database
 
-        self.isMaster = isMaster
-
+        # init the tag, that tracks the Drone (pozyx)
         try:
-            # init the tag, that tracks the Drone (pozyx)
             self.tag = Tag(anchors)
         except PozyxConnectionError:
             print("No Pozyx Tag found - will mock up position for tests.")
             # if no tag found, set it to None
             self.tag = None
+
+        if self.tag is not None:
+            # setup for the Tag
+            self.tag.setup()
+
+        # init anchors
+        self.anchors = anchors
 
         try:
             from models.yaw_detection import YawDetection
@@ -35,13 +43,12 @@ class Drone:
             # if opencv fails, set detector None
             self.yaw_detector = None
 
-        # init anchors
-        self.anchors = anchors
-
         # class, that communicates with the flight controller
         self.control = None
+
         # current position of the drone (x, y, z)
         self.position = None
+
         # current orientation of the drone (yaw, roll, pitch)
         self.orientation = None
 
@@ -50,10 +57,6 @@ class Drone:
 
         # create the Tag entity - easy read and write
         self.tag_object = database.tag.get(self.tag_id)
-
-        if self.tag is not None:
-            # setup for the Tag
-            self.tag.setup()
 
         # init LED-Stick
         self.led_sticks = LedStick(self.tag_id, database)

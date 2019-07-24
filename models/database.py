@@ -24,8 +24,6 @@ class Database:
         if isMaster is True:
             sync_uri = "ws://127.0.0.1:9999"
             sleep(1)
-            #os.popen('sudo ./sync-server-armv7l --unsecure-no-authentication -d led-server-db -b ws://0.0.0.0:9999')
-            #sleep(2)
 
         # the Box, where you can put Tag / Led objects in
         self.tag = objectbox.Box(objectbox.Builder().model(self.TagModel).directory("tag-db").build(), Tag)

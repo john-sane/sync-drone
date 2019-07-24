@@ -40,7 +40,8 @@ class YawDetection:
         print("width: ", self.cap.get(cv.CAP_PROP_FRAME_WIDTH))
         print("height: ", self.cap.get(cv.CAP_PROP_FRAME_HEIGHT))
 
-    def houghCircles(self, src, frame):
+    @staticmethod
+    def houghCircles(src, frame):
         circles = cv.HoughCircles(src,
                                   method=cv.HOUGH_GRADIENT,
                                   dp=1,
@@ -56,7 +57,8 @@ class YawDetection:
             # quit()
             return None
 
-    def drawCircles(self, frame, circles):
+    @staticmethod
+    def drawCircles(frame, circles):
         # Draw detected circles
         if circles is not None:
             # convert the (x, y) coordinates and radius of the circles to integers
