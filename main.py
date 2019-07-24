@@ -7,29 +7,16 @@ from time import sleep
 
 if __name__ == "__main__":
 
+    isMaster = False
     # define Anchor Positions (Anchor ID, Position.xyz)
-    anchors = [Anchor(0x6674, [4139, 594, 2000]).getAnchorCoordinates(),
-               Anchor(0x6976, [-768, 4320, 1200]).getAnchorCoordinates(),
-               Anchor(0x6141, [-749, 750, 1300]).getAnchorCoordinates(),
-               Anchor(0x671f, [-2229, 3645, 1000]).getAnchorCoordinates()]
+    anchors = [Anchor(0x6141, [0, 0, 0]).getAnchorCoordinates(),
+               Anchor(0x6674, [1100, 0, 500]).getAnchorCoordinates(),
+               Anchor(0x6976, [0, 2010, 1000]).getAnchorCoordinates(),
+               Anchor(0x671f, [1200, 2020, 1500]).getAnchorCoordinates()]
 
     # creates objectbox database
-    db = Database()
+    db = Database(isMaster)
 
     # creates the drone object
-    drone = Drone(anchors, db)
-
-    while True:
-        # update the current position of the drone every 0.1 seconds and print it
-        drone.updatePosition()
-        sleep(1.0)
-
-        if drone.position is not None:
-            drone.savePositionToDatabase(db)
-            drone.db_object.printPosition()
-
-        if drone.orientation is not None:
-            drone.saveOrientationToDatabase(db)
-            drone.db_object.printOrientation()
-    else:
-        pass
+    drone = Drone(anchors, db, isMaster)
+    drone.startUpdateLoop()
