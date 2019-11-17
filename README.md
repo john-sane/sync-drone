@@ -1,6 +1,7 @@
-# tracking-core
+# sync-drone
 
-Tracks the Drone and saves the position, orientation and LED color to an objectbox database instance
+Tracks the Drone and saves the position, orientation and LED color to an objectbox database instance.
+Color corresponds to the position of the drone in the room.
 
 run ```python3 main.py```
 
